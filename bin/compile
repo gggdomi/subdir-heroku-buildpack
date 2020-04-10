@@ -6,11 +6,10 @@ CACHE_DIR=${2:-}
 ENV_DIR=${3:-}
 
 if [ -f $ENV_DIR/PROJECT_PATH ]; then
-	ORIGINAL_PROJECT_PATH=PROJECT_PATH
 	PROJECT_PATH=`cat $ENV_DIR/PROJECT_PATH`
 	if [ -d $BUILD_DIR/$PROJECT_PATH ]; then
 		echo "-----> CUSTOMIZED subdir buildpack in $PROJECT_PATH"
-		if [ $ORIGINAL_PROJECT_PATH = "back" ]; then
+		if [ $PROJECT_PATH = "back" ]; then
 			echo "       deleting back/src/@app symlink"
 			unlink $BUILD_DIR/back/src/@app
 			echo "       copying front/src/@app to back/src/@app to access shared files"
