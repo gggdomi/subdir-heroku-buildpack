@@ -6,9 +6,16 @@ CACHE_DIR=${2:-}
 ENV_DIR=${3:-}
 
 if [ -f $ENV_DIR/PROJECT_PATH ]; then
+	ORIGINAL_PROJECT_PATH=PROJECT_PATH
 	PROJECT_PATH=`cat $ENV_DIR/PROJECT_PATH`
 	if [ -d $BUILD_DIR/$PROJECT_PATH ]; then
-		echo "-----> Subdir buildpack in $PROJECT_PATH"
+		echo "-----> CUSTOMIZED subdir buildpack in $PROJECT_PATH"
+		if [ $ORIGINAL_PROJECT_PATH = "back" ]; then
+			echo "       deleting back/src/@app symlink"
+			unlink $BUILD_DIR/back/src/@app
+			echo "       copying front/src/@app to back/src/@app to access shared files"
+			cp -R $BUILD_DIR/front/src/@app/. $BUILD_DIR/back/src/@app
+		fi
 		echo "       creating cache: $CACHE_DIR"
 		mkdir -p $CACHE_DIR
 		TMP_DIR=`mktemp -d $CACHE_DIR/subdirXXXXX`
